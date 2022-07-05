@@ -1,10 +1,10 @@
 import Link from "next/link";
 import { Gallery } from "../interfaces";
 
-function Index({ stars }) {
+function Index() {
   return (
     <div>
-      <p>Mark {stars} ⭐️</p>
+      <p>Mark stars ⭐️</p>
     </div>
   );
 }
