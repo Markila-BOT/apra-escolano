@@ -4,7 +4,7 @@ import { Gallery } from "../interfaces";
 function Index({ stars }) {
   return (
     <div>
-      <p>Test Mark {stars} ⭐️</p>
+      <p>Mark {stars} ⭐️</p>
     </div>
   );
 }
