@@ -1,41 +1,35 @@
-import { FC, useState } from "react";
+import { FC, useEffect, useState } from "react";
 import SearchBar from "../components/SearchBar";
 import { Gallery } from "../interfaces";
-import Fuse from "fuse.js";
 import PhotoGallery from "../components/PhotoGallery";
+import { API_URL } from "../constants";
+import { debounce } from "ts-debounce";
 
 type IndexTypes = {
   gallery: Gallery[];
 };
-const Index: FC<IndexTypes> = ({ gallery }) => {
+const Index: FC<IndexTypes> = () => {
+  const [gallery, setGallery] = useState<Gallery[]>([]);
   const [query, setQuery] = useState("");
-  const options = {
-    keys: ["title"],
-    includeScore: true,
-  };
-  const fuse = new Fuse(gallery, options);
-  const results = fuse.search(query);
-  const searchResults = query ? results.map((result) => result.item) : gallery;
+  const requestURL = query ? `${API_URL}?title_like=${query}` : API_URL;
+
+  useEffect(() => {
+    const fetchPhotos = async () => {
+      const res = await fetch(requestURL);
+      const gallery: Gallery[] = await res.json();
+      setGallery(gallery);
+    };
+
+    const debouncedFetchPhotos = debounce(fetchPhotos, 1500);
+    debouncedFetchPhotos();
+  }, [query]);
 
   return (
     <div className="flex flex-col items-center justify-center min-h-screen py-2 overflow-x-auto bg-slate-100 sm:-mx-6 sm:px-6 lg:-mx-8 lg:px-8">
       <SearchBar query={query} setQuery={setQuery} />
-      <PhotoGallery gallery={searchResults} />
+      <PhotoGallery gallery={gallery} />
     </div>
   );
 };
-
-export async function getStaticProps() {
-  const res = await fetch(
-    "https://jsonplaceholder.typicode.com/albums/1/photos"
-  );
-  const json: Gallery[] = await res.json();
-
-  return {
-    props: {
-      gallery: json,
-    },
-  };
-}
 
 export default Index;

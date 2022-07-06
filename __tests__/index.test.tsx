@@ -1,4 +1,4 @@
-import { render, screen } from "@testing-library/react";
+import { fireEvent, render, screen } from "@testing-library/react";
 import PhotoGallery from "../components/PhotoGallery";
 import SearchBar from "../components/SearchBar";
 import { mockGallery } from "./snapshot";
